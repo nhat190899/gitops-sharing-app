@@ -58,8 +58,8 @@ jobs:
         with:
           context: ./
           tags: /
-            nhat190899/hello-ui:${{ github.sha }}
-            ghcr.io/nhat190899/hello-ui:${{ github.sha }}
+            nhat190899/hello-ui:123
+            ghcr.io/nhat190899/hello-ui:123
           push: ${{ github.ref == 'refs/heads/main'}}
 
       - name: Image digest
@@ -78,10 +78,10 @@ jobs:
         run: /
           git config --global user.email "nhat190899@gmail.com"
           git config --global user.name "nhat190899"
-          echo ${{ github.sha }}
-          sed -i "s#${{ github.actor }}.*#${{ github.actor }}/hello-ui:${{ github.sha }}#g" values.yaml
+          echo 123
+          sed -i "s#${{ github.actor }}.*#${{ github.actor }}/hello-ui:123#g" values.yaml
           git add -A 
-          git commit -am "Update image for - ${{ github.sha }}"
+          git commit -am "Update image for - 123"
       - run: echo ${{ github }}
       - run: git push origin main
           
