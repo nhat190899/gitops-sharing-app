@@ -61,7 +61,7 @@ jobs:
           context: ./
           tags: nhat190899/hello-ui:${{ github.sha }}
           push: ${{ github.ref == 'refs/heads/main'}}
-
+          platforms: linux/amd64,linux/arm64
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
 
