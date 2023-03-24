@@ -71,7 +71,7 @@ jobs:
         with: 
           repository: nhat190899/gitops-sharing-infra
           ref: 'main'
-          token: ${{ secrets.G-TOKEN }}
+          token: ${{ secrets.G_TOKEN }}
       - name: setup-git-config
         run: /
           git config --global user.email "nhat190899@gmail.com"
