@@ -36,7 +36,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Setup on Docker build
+      - name: Setup on Docker buildx
         id: buildx
         uses: docker/setup-buildx-action@v2
 
@@ -54,12 +54,12 @@ jobs:
           password: ${{ secrets.G_TOKEN }}
 
       - name: Build image and push to Docker Hub and Git Container Registry
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v4
         with:
           context: ./
           tags: /
-            nhat190899/hello-ui:3.1.2
-            ghcr.io/nhat190899/hello-ui:3.1.2
+            nhat190899/hello-ui:${{ github.sha }}
+            ghcr.io/nhat190899/hello-ui:${{ github.sha }}
           push: ${{ github.ref == 'refs/heads/main'}}
 
       - name: Image digest
@@ -78,10 +78,10 @@ jobs:
         run: /
           git config --global user.email "nhat190899@gmail.com"
           git config --global user.name "nhat190899"
-          echo 3.1.2
-          sed -i "s#${{ github.actor }}.*#${{ github.actor }}/hello-ui:3.1.2#g" values.yaml
+          echo ${{ github.sha }}
+          sed -i "s#${{ github.actor }}.*#${{ github.actor }}/hello-ui:${{ github.sha }}#g" values.yaml
           git add -A 
-          git commit -am "Update image for - 3.1.2"
+          git commit -am "Update image for - ${{ github.sha }}"
       - run: echo ${{ github }}
       - run: git push origin main
           
