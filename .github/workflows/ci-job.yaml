@@ -39,7 +39,7 @@ jobs:
       - name: Setup on Docker buildx
         id: buildx
         uses: docker/setup-buildx-action@v2
-        outputs:
+        with:
           platforms: linux/amd64,linux/arm64
 
       - name: Login to DockerHub
