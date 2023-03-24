@@ -57,9 +57,7 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: ./
-          tags: /
-            nhat190899/hello-ui:${{ github.sha }}
-            ghcr.io/nhat190899/hello-ui:${{ github.sha }}
+          tags: nhat190899/hello-ui:${{ github.sha }}
           push: ${{ github.ref == 'refs/heads/main'}}
 
       - name: Image digest
