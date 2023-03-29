@@ -2,9 +2,30 @@ name: ci-job
 
 on: 
   push:
-    branches: [main]
+    branches: [developer,release,main]
 
+env:
+  REGISTRY: nhat190899
+  IMAGE_NAME_PREFIX: fsoft
+  REPO_GITHUB_INFRA: nhat190899/gitops-sharing-infra
 jobs:
+  init:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set environment for branch
+        id: setvars
+        run: |
+          if [[ "${{github.base_ref}}" == "developer" || "${{github.ref}}" == "refs/heads/developer" ]]; then
+            echo "ENVIRONMENT=local" >> "$GITHUB_ENV"
+          fi
+
+          if [[ "${{github.base_ref}}" == "release" || "${{github.ref}}" == "refs/heads/release" ]]; then
+            echo "ENVIRONMENT=staging" >> "$GITHUB_ENV"
+          fi
+
+          if [[ "${{github.base_ref}}" == "main" || "${{github.ref}}" == "refs/heads/main" ]]; then
+            echo "ENVIRONMENT=production" >> "$GITHUB_ENV"
+          fi
   build:
     runs-on: ubuntu-latest
     strategy:
@@ -50,8 +71,8 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: ./
-          tags: nhat190899/hello-ui:${{ github.sha }}
-          push: ${{ github.ref == 'refs/heads/main'}}
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_PREFIX }}-${{ env.ENVIRONMENT }}:${{ github.sha }}
+          push: true
           platforms: linux/amd64,linux/arm64
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
@@ -62,15 +83,15 @@ jobs:
     steps: 
       - uses: actions/checkout@v3
         with: 
-          repository: nhat190899/gitops-sharing-infra
+          repository: ${{ REPO_GITHUB_INFRA }}
           ref: 'main'
           token: ${{ secrets.G_TOKEN }}
       - name: setup-git-config
         run: |
-          git config --global user.email "nhat190899@gmail.com"
-          git config --global user.name "nhat190899"
+          # git config --global user.email "nhat190899@gmail.com"
+          # git config --global user.name "nhat190899"
           echo ${{ github.sha }}
-          sed -i "s#${{ github.actor }}.*#${{ github.actor }}/hello-ui:${{ github.sha }}#g" values.yaml
+          sed -i "s#${{ env.REGISTRY }}.*#${{ env.REGISTRY }}/${{ env.IMAGE_NAME_PREFIX }}-${{ env.ENVIRONMENT }}:${{ github.sha }}#g" value-${{ env.ENVIRONMENT }}.yaml
           git add -A 
           git commit -am "Update image for - ${{ github.sha }}"
       - run: echo ${{ github }}
