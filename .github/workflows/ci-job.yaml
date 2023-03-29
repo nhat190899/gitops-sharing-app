@@ -18,7 +18,7 @@ jobs:
       - name: Set variables for branch
         id: setvars
         run: |
-          if [[ "${{github.base_ref}}" == "devloper" || "${{github.ref}}" == "refs/heads/developer" ]]; then
+          if [[ "${{github.base_ref}}" == "developer" || "${{github.ref}}" == "refs/heads/developer" ]]; then
             echo "app_env=local" >> $GITHUB_OUTPUT
           fi
 
