@@ -1,8 +1,6 @@
 name: ci-job
 
 on: 
-  push:
-    branches: [developer,release,main]
   pull_request:
     branches: [developer,release,main]
 env:
