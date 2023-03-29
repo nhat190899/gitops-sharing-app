@@ -1,9 +1,8 @@
 name: ci-job
 
 on: 
-  push:
+  pull_request:
     branches: [developer,release,main]
-
 env:
   REGISTRY: nhat190899
   IMAGE_NAME_PREFIX: fsoft
@@ -19,15 +18,15 @@ jobs:
       - name: Set variables for branch
         id: setvars
         run: |
-          if [[ "${{github.base_ref}}" == "devloper" || "${{github.ref}}" == "refs/heads/developer" ]]; then
+          if [[ "${{github.base_ref}}" == "developer" ]]; then
             echo "app_env=local" >> $GITHUB_OUTPUT
           fi
 
-          if [[ "${{github.base_ref}}" == "release" || "${{github.ref}}" == "refs/heads/release" ]]; then
+          if [[ "${{github.base_ref}}" == "release" ]]; then
             echo "app_env=staging" >> $GITHUB_OUTPUT
           fi
 
-          if [[ "${{github.base_ref}}" == "main" || "${{github.ref}}" == "refs/heads/main" ]]; then
+          if [[ "${{github.base_ref}}" == "main" ]]; then
             echo "app_env=production" >> $GITHUB_OUTPUT
           fi
   build:
