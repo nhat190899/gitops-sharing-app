@@ -13,7 +13,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Set environment for branch
-        run: echo "ENVIRONMENT=production" >> "$GITHUB_ENV"
+        run: echo "DOCKER_IMAGE=production" >> "$GITHUB_ENV"
+      - run: echo ${{ env.DOCKER_IMAGE }}
   build:
     runs-on: ubuntu-latest
     strategy:
