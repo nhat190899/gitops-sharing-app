@@ -13,17 +13,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Set environment for branch
-        id: setvars
         run: |
-          if [[ "${{github.base_ref}}" == "developer" || "${{github.ref}}" == "refs/heads/developer" ]]; then
-            echo "ENVIRONMENT=local" >> "$GITHUB_ENV"
-          fi
+          # if [[ "${{github.base_ref}}" == "developer" || "${{github.ref}}" == "refs/heads/developer" ]]; then
+          #   echo "ENVIRONMENT=local" >> "$GITHUB_ENV"
+          # fi
 
-          if [[ "${{github.base_ref}}" == "release" || "${{github.ref}}" == "refs/heads/release" ]]; then
-            echo "ENVIRONMENT=staging" >> "$GITHUB_ENV"
-          fi
+          # if [[ "${{github.base_ref}}" == "release" || "${{github.ref}}" == "refs/heads/release" ]]; then
+          #   echo "ENVIRONMENT=staging" >> "$GITHUB_ENV"
+          # fi
 
-          if [[ "${{github.base_ref}}" == "main" || "${{github.ref}}" == "refs/heads/main" ]]; then
+          if "${{github.ref}}" == "refs/heads/main"
+          then
             echo "ENVIRONMENT=production" >> "$GITHUB_ENV"
           fi
   build:
