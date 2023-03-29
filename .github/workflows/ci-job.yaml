@@ -8,6 +8,8 @@ env:
   REGISTRY: nhat190899
   IMAGE_NAME_PREFIX: fsoft
   REPO_GITHUB_INFRA: nhat190899/gitops-sharing-infra
+  USER_EMAIL: nhat190899@gmail.com
+  USER_NAME: nhat190899
 jobs:
   init:
     runs-on: ubuntu-latest
@@ -89,8 +91,8 @@ jobs:
           token: ${{ secrets.G_TOKEN }}
       - name: setup-git-config
         run: |
-          # git config --global user.email "nhat190899@gmail.com"
-          # git config --global user.name "nhat190899"
+          git config --global user.email "${{env.USER_EMAIL}}"
+          git config --global user.name "${{env.USER_NAME}}"
           echo ${{ github.sha }}
           sed -i "s#${{env.REGISTRY}}.*#${{env.REGISTRY}}/${{env.IMAGE_NAME_PREFIX}}-${{needs.init.outputs.app_env}}:${{ github.sha }}#g" value-${{needs.init.outputs.app_env}}.yaml
           git add -A 
