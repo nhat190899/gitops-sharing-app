@@ -1,6 +1,6 @@
 <template>
   <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to FSoft-COE-HCM sharing meeting sprint 2"/>
+  <HelloWorld msg="Welcome to FSoft-COE-HCM sharing meeting"/>
 </template>
 
 <script>
