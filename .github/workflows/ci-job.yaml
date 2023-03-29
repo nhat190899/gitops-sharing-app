@@ -3,7 +3,8 @@ name: ci-job
 on: 
   push:
     branches: [developer,release,main]
-
+  pull_request:
+    branches: [developer,release,main]
 env:
   REGISTRY: nhat190899
   IMAGE_NAME_PREFIX: fsoft
