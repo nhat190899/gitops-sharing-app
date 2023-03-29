@@ -11,10 +11,23 @@ env:
 jobs:
   init:
     runs-on: ubuntu-latest
+    outputs:
+      app_env: ${{ steps.setvars.outputs.app_env }}
     steps:
-      - name: Set environment for branch
-        run: echo "APP_ENV=production" >> "$GITHUB_ENV"
-      - run: echo ${{ env.APP_ENV }}
+      - name: Set variables for branch
+        id: setvars
+        run: |
+          if [[ "${{github.base_ref}}" == "devloper" || "${{github.ref}}" == "refs/heads/developer" ]]; then
+            echo "::set-output name=app_env::local"
+          fi
+
+          if [[ "${{github.base_ref}}" == "release" || "${{github.ref}}" == "refs/heads/release" ]]; then
+            echo "::set-output name=app_env::staging"
+          fi
+
+          if [[ "${{github.base_ref}}" == "main" || "${{github.ref}}" == "refs/heads/main" ]]; then
+            echo "::set-output name=app_env::production"
+          fi
   build:
     runs-on: ubuntu-latest
     strategy:
@@ -41,11 +54,10 @@ jobs:
   build-and-push-docker-image:
     name: Build docker image and push to repo
     runs-on: ubuntu-latest
-    needs: ['build', 'test-stage']
+    needs: ['init', 'build', 'test-stage']
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-      - run: echo ${{ env.APP_ENV }}
       - name: Setup on Docker buildx
         id: buildx
         uses: docker/setup-buildx-action@v2
@@ -60,7 +72,7 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: ./
-          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_PREFIX }}-${{ env.APP_ENV }}:${{ github.sha }}
+          tags: ${{env.REGISTRY}}/${{env.IMAGE_NAME_PREFIX}}-${{needs.init.outputs.app_env}}:${{ github.sha }}
           push: true
           platforms: linux/amd64,linux/arm64
       - name: Image digest
@@ -80,7 +92,7 @@ jobs:
           # git config --global user.email "nhat190899@gmail.com"
           # git config --global user.name "nhat190899"
           echo ${{ github.sha }}
-          sed -i "s#${{ env.REGISTRY }}.*#${{ env.REGISTRY }}/${{ env.IMAGE_NAME_PREFIX }}-${{ env.APP_ENV }}:${{ github.sha }}#g" value-${{ env.APP_ENV }}.yaml
+          sed -i "s#${{ env.REGISTRY }}.*#${{ env.REGISTRY }}/${{ env.IMAGE_NAME_PREFIX }}-${{needs.init.outputs.app_env}}:${{ github.sha }}#g" value-${{needs.init.outputs.app_env}}.yaml
           git add -A 
           git commit -am "Update image for - ${{ github.sha }}"
       - run: echo ${{ github }}
