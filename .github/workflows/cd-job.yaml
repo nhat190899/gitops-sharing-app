@@ -18,15 +18,15 @@ jobs:
       - name: Set variables for branch
         id: setvars
         run: |
-          if [[ "${{github.base_ref}}" == "developer" ]]; then
+          if [[ "${{github.ref}}" == "refs/heads/developer" ]]; then
             echo "app_env=local" >> $GITHUB_OUTPUT
           fi
 
-          if [[ "${{github.base_ref}}" == "release" ]]; then
+          if [[ "${{github.ref}}" == "refs/heads/release" ]]; then
             echo "app_env=staging" >> $GITHUB_OUTPUT
           fi
 
-          if [[ "${{github.base_ref}}" == "main" ]]; then
+          if [[ "${{github.ref}}" == "refs/heads/main" ]]; then
             echo "app_env=production" >> $GITHUB_OUTPUT
           fi
   build-and-push-docker-image:
